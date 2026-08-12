@@ -1,0 +1,27 @@
+<%= turbo_frame_tag "board" do %>
+  <p class="status"><%= game.result_message %></p>
+
+  <div class="board">
+    <% game.cells.each_with_index do |cell, position| %>
+      <% is_winning  = game.winning_line_positions.include?(position) %>
+      <% is_last_move = game.moves.last&.position == position %>
+
+      <%= button_to(
+            cell == "-" ? "" : cell,
+            game_moves_path(game, position: position),
+            method: :post,
+            disabled: cell != "-" || game.game_over?,
+            class: [
+              "cell",
+              ("cell--#{cell}" unless cell == "-"),
+              ("cell--winning" if is_winning)
+            ].compact.join(" "),
+            data: (is_last_move ? { controller: "cell" } : {})
+          ) %>
+    <% end %>
+  </div>
+
+  <% if game.game_over? %>
+    <%= button_to "Play again", reset_game_path(game), method: :patch %>
+  <% end %>
+<% end %>
