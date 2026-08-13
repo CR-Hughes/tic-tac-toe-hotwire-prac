@@ -11,24 +11,24 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.1].define(version: 2026_08_12_135955) do
-  create_table "games", force: :cascade do |t|
-    t.string "board", default: "---------", null: false
-    t.datetime "created_at", null: false
-    t.string "current_player", default: "X", null: false
-    t.string "status", default: "in_progress", null: false
-    t.datetime "updated_at", null: false
-    t.string "winner"
-    t.string "winning_line"
+  create_table 'games', force: :cascade do |t|
+    t.string 'board', default: '---------', null: false
+    t.datetime 'created_at', null: false
+    t.string 'current_player', default: 'X', null: false
+    t.string 'status', default: 'in_progress', null: false
+    t.datetime 'updated_at', null: false
+    t.string 'winner'
+    t.string 'winning_line'
   end
 
-  create_table "moves", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "game_id", null: false
-    t.string "player"
-    t.integer "position"
-    t.datetime "updated_at", null: false
-    t.index ["game_id"], name: "index_moves_on_game_id"
+  create_table 'moves', force: :cascade do |t|
+    t.datetime 'created_at', null: false
+    t.integer 'game_id', null: false
+    t.string 'player'
+    t.integer 'position'
+    t.datetime 'updated_at', null: false
+    t.index ['game_id'], name: 'index_moves_on_game_id'
   end
 
-  add_foreign_key "moves", "games"
+  add_foreign_key 'moves', 'games'
 end
