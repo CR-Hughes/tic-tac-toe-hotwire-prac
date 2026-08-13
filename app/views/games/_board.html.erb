@@ -1,6 +1,24 @@
-<%# broadcasts. Update framge tag = `game` itself, so it matches what broadcasts_to targets by default %>
 <%= turbo_frame_tag game do %>
-  <p class="status"><%= game.result_message %></p>
+  <div class="game-header">
+    <div class="brand">
+      <%= mark_icon('X', size: 18) %>
+      <%= mark_icon('O', size: 18) %>
+    </div>
+
+    <div class="status-pill <%= 'status-pill--over' if game.game_over? %>">
+      <% if game.status == 'won' %>
+        <%= mark_icon(game.winner, size: 14) %> WINS
+      <% elsif game.status == 'draw' %>
+        DRAW
+      <% else %>
+        <%= mark_icon(game.current_player, size: 14) %> TURN
+      <% end %>
+    </div>
+
+    <%= button_to reset_game_path(game), method: :patch, class: 'icon-button' do %>
+      ↻
+    <% end %>
+  </div>
 
   <div class="board">
     <% game.cells.each_with_index do |cell, position| %>
@@ -8,21 +26,14 @@
       <% is_last_move = game.moves.last&.position == position %>
 
       <%= button_to(
-            cell == '-' ? '' : cell,
             game_moves_path(game, position: position),
             method: :post,
             disabled: cell != '-' || game.game_over?,
-            class: [
-              'cell',
-              ("cell--#{cell}" unless cell == '-'),
-              ('cell--winning' if is_winning),
-            ].compact.join(' '),
+            class: ['cell', ('cell--winning' if is_winning)].compact.join(' '),
             data: (is_last_move ? { controller: 'cell' } : {}),
-          ) %>
+          ) do %>
+        <%= mark_icon(cell) %>
+      <% end %>
     <% end %>
   </div>
-
-  <% if game.game_over? %>
-    <%= button_to 'Play again', reset_game_path(game), method: :patch %>
-  <% end %>
 <% end %>
