@@ -2,7 +2,13 @@ class Game < ApplicationRecord
   has_many :moves, dependent: :destroy
 
   # broadcast board changes to a stream unique to this game
-  broadcasts_to ->(game) { game }, partial: 'games/board'
+  # v1
+  #   broadcasts_to ->(game) { game }, partial: 'games/board'
+  # v2
+  #   broadcasts_refreshes_to ->(game) { game }
+  after_commit :broadcast_game_refresh
+
+  after_update_commit :broadcast_celebration, if: -> { saved_change_to_status?(to: 'won') }
 
   WIN_COMBINATIONS = [
     [ 0, 1, 2 ], [ 3, 4, 5 ], [ 6, 7, 8 ], # rows
@@ -55,5 +61,15 @@ class Game < ApplicationRecord
     when 'draw' then "It's a draw!"
     else "Player #{current_player}'s turn"
     end
+  end
+
+  private
+
+  def broadcast_celebration
+    broadcast_action_to self, action: :celebrate, render: false
+  end
+
+  def broadcast_game_refresh
+    broadcast_refresh_to self
   end
 end
