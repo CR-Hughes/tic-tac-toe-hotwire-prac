@@ -4,8 +4,17 @@ class Game < ApplicationRecord
   # broadcast board changes to a stream unique to this game
   # v1
   #   broadcasts_to ->(game) { game }, partial: 'games/board'
-  # v2
-  #   broadcasts_refreshes_to ->(game) { game }
+
+
+  # v2 - What this does is generate an after_commit callback for us
+  # and whoever wrote this macro made the decision, baked permanently into that one line,
+  # that the callback it generates will always call *broadcast_refresh_later_to*.
+  # Not configurable, not inferred from the macro's name — just hardcoded.
+  # So this essentailly becomes: *  after_commit -> { broadcast_refresh_later_to(stream.try(:call, self) || send(stream)) }*
+  # Which has a 500ms delay hence the slow visual performance timing.
+  # broadcasts_refreshes_to ->(game) { game },
+
+  # Whereas this method is a custom callback that uses broadcast_refresh_to directly.
   after_commit :broadcast_game_refresh
 
   after_update_commit :broadcast_celebration, if: -> { saved_change_to_status?(to: 'won') }
