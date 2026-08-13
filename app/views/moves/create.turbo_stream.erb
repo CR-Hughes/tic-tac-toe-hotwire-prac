@@ -1,2 +1,2 @@
-<%= turbo_stream.replace "board", partial: "games/board", locals: { game: @game } %>
+<%= turbo_stream.replace @game, partial: "games/board", locals: { game: @game } %>
 <%= turbo_stream.append "move_history", partial: "moves/move", locals: { move: @game.moves.last } %>
