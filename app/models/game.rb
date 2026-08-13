@@ -1,6 +1,7 @@
 class Game < ApplicationRecord
   has_many :moves, dependent: :destroy
 
+  # broadcast board changes to a stream unique to this game
   broadcasts_to ->(game) { game }, partial: 'games/board'
 
   WIN_COMBINATIONS = [

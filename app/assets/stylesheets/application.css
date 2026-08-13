@@ -37,3 +37,19 @@ body {
     padding-top: 3rem;
     font-family: system-ui, sans-serif;
 }
+
+.confetti-piece {
+  position: fixed;
+  top: -10px;
+  width: 10px;
+  height: 10px;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 1000;
+  animation-name: confetti-fall;
+  animation-timing-function: ease-in;
+}
+
+@keyframes confetti-fall {
+  to { transform: translateY(100vh) rotate(720deg); opacity: 0.4; }
+}

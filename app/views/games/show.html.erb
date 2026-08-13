@@ -1,8 +1,11 @@
-<h1>Tic Tac Toe</h1>
+<div data-controller="confetti" data-action="game:celebrate@document->confetti#celebrate">
+    <h1>Tic Tac Toe</h1>
 
-<%= turbo_stream_from @game %>
+    <%# broadcast. Subscribe to the game's stream. %>
+    <%= turbo_stream_from @game %>
 
-<%= render 'board', game: @game %>
+    <%= render 'board', game: @game %>
 
-<h2>Move history</h2>
-<%= turbo_frame_tag 'move_history_frame', src: game_moves_path(@game) %>
+    <h2>Move history</h2>
+    <%= turbo_frame_tag 'move_history_frame', src: game_moves_path(@game) %>
+</div>
